@@ -66,13 +66,45 @@ app.get("/cipher", (req, res) => {
 /*To send an array of values to the server via a query string simply repeat the key with different values. For instance, the query string ?arr=1&arr=2&arr=3 results in the query object { arr: [ '1', '2', '3' ] }. Create a new endpoint /lotto that accepts an array of 6 distinct numbers between 1 and 20 named numbers. The function then randomly generates 6 numbers between 1 and 20. Compare the numbers sent in the query with the randomly generated numbers to determine how many match. If fewer than 4 numbers match respond with the string "Sorry, you lose". If 4 numbers match respond with the string "Congratulations, you win a free ticket", if 5 numbers match respond with "Congratulations! You win $100!". If all 6 numbers match respond with "Wow! Unbelievable! You could have won the mega millions!".*/
 
 app.get("/lotto", (req, res) => {
-  const { numbers } = req.query;
-  console.log(numbers);
+  const { arr } = req.query;
+  console.log(arr);
+  let winningNums = [];
+  let count = 0;
 
-  let random = Math.floor(Math.random() * 20) + 1;
-  console.log(random);
+  let newArr = arr.map((x) => parseInt(x));
+  console.log(newArr);
 
-  res.send("lotto page");
+  for (let i = 0; i < 6; i++) {
+    winningNums.push(Math.floor(Math.random() * 20) + 1);
+  }
+
+  console.log(winningNums);
+
+  newArr.map((x) => {
+    if (winningNums.includes(x)) {
+      count += 1;
+    }
+  });
+
+  console.log(count);
+
+  let response;
+
+  switch (count) {
+    case count === 4:
+      response = "Congratulations, you win a free ticket!";
+      break;
+    case count === 5:
+      response = "Congratulations! You win $100!";
+      break;
+    case count === 6:
+      response = "Wow! Unbelievable! You could have won the mega millions!";
+      break;
+    default:
+      response = "Sorry, you lose";
+  }
+
+  res.send(response);
 });
 
 app.listen(8000, () => {
